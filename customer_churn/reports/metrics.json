@@ -1,0 +1,120 @@
+{
+  "model_name": "random_forest",
+  "best_parameters": {
+    "model__n_estimators": 500,
+    "model__min_samples_leaf": 5,
+    "model__max_depth": 12
+  },
+  "test_accuracy": 1.0,
+  "test_roc_auc": 1.0,
+  "test_pr_auc": 1.0,
+  "test_precision": 1.0,
+  "test_recall": 1.0,
+  "test_f1": 1.0,
+  "mean_brier_score": 1.3111457090484233e-06,
+  "decision_threshold": 0.19000000000000003,
+  "cv_model_comparison": [
+    {
+      "model": "logistic_regression",
+      "cv_roc_auc": 0.9924905808964739,
+      "best_parameters": {
+        "model__C": 20
+      }
+    },
+    {
+      "model": "random_forest",
+      "cv_roc_auc": 1.0,
+      "best_parameters": {
+        "model__n_estimators": 500,
+        "model__min_samples_leaf": 5,
+        "model__max_depth": 12
+      }
+    },
+    {
+      "model": "hist_gradient_boosting",
+      "cv_roc_auc": 1.0,
+      "best_parameters": {
+        "model__min_samples_leaf": 10,
+        "model__max_leaf_nodes": 31,
+        "model__max_iter": 150,
+        "model__learning_rate": 0.06
+      }
+    }
+  ],
+  "class_distribution": {
+    "stay": 117,
+    "churn": 883
+  },
+  "classification_report": {
+    "No churn": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 23.0
+    },
+    "Churn": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 177.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 200.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 200.0
+    }
+  },
+  "top_features": [
+    {
+      "Feature": "TechSupport",
+      "Importance": 0.2994043232620977
+    },
+    {
+      "Feature": "ContractType",
+      "Importance": 0.29823753377548506
+    },
+    {
+      "Feature": "Tenure",
+      "Importance": 0.24124907885040528
+    },
+    {
+      "Feature": "MonthlyCharges",
+      "Importance": 0.0010030295586670086
+    },
+    {
+      "Feature": "InternetService",
+      "Importance": 0.0
+    },
+    {
+      "Feature": "TotalCharges",
+      "Importance": 0.0
+    },
+    {
+      "Feature": "Gender",
+      "Importance": 0.0
+    },
+    {
+      "Feature": "Age",
+      "Importance": 0.0
+    }
+  ],
+  "dataset_rows": 1000,
+  "raw_features": [
+    "Age",
+    "Gender",
+    "Tenure",
+    "MonthlyCharges",
+    "ContractType",
+    "InternetService",
+    "TotalCharges",
+    "TechSupport"
+  ]
+}
