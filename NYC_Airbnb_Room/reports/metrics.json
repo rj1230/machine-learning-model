@@ -1,0 +1,39 @@
+{
+    "dataset_rows": 48895,
+    "dataset_columns": 16,
+    "training_samples": 32759,
+    "testing_samples": 16136,
+    "baseline_cv_macro_f1": 0.7411150104859532,
+    "best_cv_macro_f1": 0.7444549924925131,
+    "oof_macro_f1_argmax": 0.7009078360015192,
+    "oof_macro_f1_weighted": 0.7442534134695787,
+    "test_accuracy": 0.86334903321765,
+    "test_macro_f1": 0.7559838495204628,
+    "test_macro_f1_argmax": 0.7170840341295083,
+    "per_class_f1": {
+        "Entire home/apt": 0.8845566647093365,
+        "Private room": 0.8520920073715105,
+        "Shared room": 0.5313028764805414
+    },
+    "mean_brier_score": 0.06856356586489665,
+    "brier_scores_by_class": {
+        "Entire home/apt": 0.08971592320405948,
+        "Private room": 0.10032161779527075,
+        "Shared room": 0.015653156595359707
+    },
+    "decision_weights": {
+        "Entire home/apt": 1.0,
+        "Private room": 1.0,
+        "Shared room": 2.75
+    },
+    "best_parameters": {
+        "model_type": "hist_gradient_boosting",
+        "hgb_learning_rate": 0.07859132916582494,
+        "hgb_max_iter": 300,
+        "hgb_max_leaf_nodes": 58,
+        "hgb_min_samples_leaf": 31,
+        "hgb_l2_regularization": 0.06416399186051586,
+        "hgb_class_weight": null
+    },
+    "model_path": "C:\\Users\\HP\\OneDrive\\Desktop\\Machine-learning-Project\\NYC_Airbnb_Room\\models\\Best_Model_Pipeline.pkl"
+}

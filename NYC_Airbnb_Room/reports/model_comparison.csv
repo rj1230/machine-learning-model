@@ -1,0 +1,6 @@
+Stage,Macro F1,Accuracy
+Baseline RF (CV),0.7411150104859532,0.8549710651001977
+Best hist_gradient_boosting (CV),0.7444549924925131,
+"Calibrated, argmax (OOF)",0.7009078360015192,
+"Calibrated, tuned weights (OOF)",0.7442534134695787,
+Final model (TEST),0.7559838495204628,0.86334903321765
