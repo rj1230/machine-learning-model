@@ -13,7 +13,21 @@ BASE = Path(__file__).resolve().parent
 METRICS = BASE / "reports" / "metrics.json"
 API = os.getenv("CHURN_API_URL", "http://localhost:8000").rstrip("/")
 st.markdown(
-    """<style>.block-container{max-width:1450px;padding-top:1.8rem}.hero{padding:2rem;border-radius:22px;background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;margin-bottom:1.3rem}.hero h1{margin:0;font-size:2.4rem}.hero p{color:#dbeafe;max-width:760px;line-height:1.6}.card{padding:1.2rem;border:1px solid #e2e8f0;border-radius:16px;background:#fff;box-shadow:0 6px 18px #0f172a12}.critical{border-left:6px solid #dc2626}.high{border-left:6px solid #f59e0b}.watch{border-left:6px solid #2563eb}.low{border-left:6px solid #16a34a}div[data-testid=stMetric]{border:1px solid #e2e8f0;padding:1rem;border-radius:14px;background:#fff}</style>""",
+    """<style>
+.block-container{max-width:1450px;padding-top:1.8rem}
+.hero{padding:2rem;border-radius:22px;background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;margin-bottom:1.3rem}
+.hero h1{margin:0;font-size:2.4rem}
+.hero p{color:#dbeafe;max-width:760px;line-height:1.6}
+.card{padding:1.2rem;border:1px solid #e2e8f0;border-radius:16px;background:#fff;box-shadow:0 6px 18px #0f172a12}
+.critical{border-left:6px solid #dc2626}
+.high{border-left:6px solid #f59e0b}
+.watch{border-left:6px solid #2563eb}
+.low{border-left:6px solid #16a34a}
+div[data-testid="stMetric"]{border:1px solid #e2e8f0;padding:1rem;border-radius:14px;background:#fff}
+div[data-testid="stMetric"] [data-testid="stMetricLabel"] p{color:#475569 !important}
+div[data-testid="stMetric"] [data-testid="stMetricValue"]{color:#0f172a !important}
+div[data-testid="stMetric"] [data-testid="stMetricDeltaValue"]{color:#16a34a !important}
+</style>""",
     unsafe_allow_html=True,
 )
 
