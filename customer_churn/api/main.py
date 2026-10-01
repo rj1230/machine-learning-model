@@ -1,13 +1,19 @@
 """
 ChurnGuard FastAPI inference service.
 
-Run locally:
-    uv run uvicorn api.main:app --reload
+Run locally from the project root:
 
-Docs:
+    $env:PYTHONPATH = "$PWD\customer_churn"
+    uv run uvicorn customer_churn.api.main:app --reload
+
+API documentation:
+
     http://127.0.0.1:8000/docs
 """
 
+from __future__ import annotations
+
+import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
@@ -22,11 +28,17 @@ from pydantic import BaseModel, Field
 # CONFIGURATION
 # ============================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-MODEL_PATH = PROJECT_ROOT / "artifacts" / "churn_model.pkl"
+CUSTOMER_CHURN_DIR = Path(__file__).resolve().parent.parent
+
+# Required so joblib can restore:
+# churn_features.ChurnFeatureEngineer
+if str(CUSTOMER_CHURN_DIR) not in sys.path:
+    sys.path.insert(0, str(CUSTOMER_CHURN_DIR))
+
+MODEL_PATH = CUSTOMER_CHURN_DIR / "models" / "Best_Churn_Pipeline.pkl"
 
 MODEL_VERSION = "1.0.0"
-DEFAULT_THRESHOLD = 0.50
+FALLBACK_THRESHOLD = 0.50
 
 
 # ============================================================
@@ -35,7 +47,13 @@ DEFAULT_THRESHOLD = 0.50
 
 
 class CustomerInput(BaseModel):
-    """Raw customer data expected by the saved sklearn pipeline."""
+    """
+    Raw customer fields expected by the churn prediction pipeline.
+
+    Field aliases preserve the original CSV/training-column names.
+    The Streamlit API client may send lowercase Python names because
+    populate_by_name=True is enabled.
+    """
 
     age: int = Field(
         ...,
@@ -43,29 +61,62 @@ class CustomerInput(BaseModel):
         ge=18,
         le=100,
         examples=[35],
-        description="Customer age in years.",
     )
+
     gender: Literal["Male", "Female"] = Field(
         ...,
         alias="Gender",
         examples=["Female"],
-        description="Customer gender category used by the trained model.",
     )
+
     tenure: int = Field(
         ...,
         alias="Tenure",
         ge=0,
         le=120,
         examples=[24],
-        description="Customer tenure in months.",
     )
+
     monthly_charges: float = Field(
         ...,
         alias="MonthlyCharges",
         ge=0,
         le=10000,
         examples=[70.0],
-        description="Customer monthly charges.",
+    )
+
+    total_charges: float = Field(
+        ...,
+        alias="TotalCharges",
+        ge=0,
+        le=100000,
+        examples=[1680.0],
+    )
+
+    contract_type: Literal[
+        "Month-to-Month",
+        "One Year",
+        "Two Year",
+    ] = Field(
+        ...,
+        alias="ContractType",
+        examples=["Month-to-Month"],
+    )
+
+    internet_service: Literal[
+        "Fiber Optic",
+        "DSL",
+        "No",
+    ] = Field(
+        ...,
+        alias="InternetService",
+        examples=["Fiber Optic"],
+    )
+
+    tech_support: Literal["Yes", "No"] = Field(
+        ...,
+        alias="TechSupport",
+        examples=["No"],
     )
 
     model_config = {
@@ -77,6 +128,10 @@ class CustomerInput(BaseModel):
                     "Gender": "Female",
                     "Tenure": 24,
                     "MonthlyCharges": 70.0,
+                    "TotalCharges": 1680.0,
+                    "ContractType": "Month-to-Month",
+                    "InternetService": "Fiber Optic",
+                    "TechSupport": "No",
                 }
             ]
         },
@@ -84,36 +139,53 @@ class CustomerInput(BaseModel):
 
 
 class BusinessSettings(BaseModel):
-    """Optional business assumptions used for intervention economics."""
+    """Optional values for retention-campaign expected-value analysis."""
 
     customer_lifetime_value: float = Field(
         default=500.0,
-        ge=1,
-        le=1_000_000,
-        description="Estimated customer lifetime value in dollars.",
+        ge=1.0,
+        le=1_000_000.0,
     )
+
     campaign_cost: float = Field(
         default=50.0,
-        ge=0,
-        le=100_000,
-        description="Cost of one retention campaign in dollars.",
+        ge=0.0,
+        le=100_000.0,
     )
+
     campaign_success_rate: float = Field(
         default=0.30,
         ge=0.0,
         le=1.0,
-        description="Probability that an intervention retains a likely churner.",
     )
 
 
 class PredictionRequest(BaseModel):
+    """
+    Request format:
+
+    {
+        "customer": {
+            "age": 35,
+            "gender": "Female",
+            ...
+        },
+        "business": {
+            "customer_lifetime_value": 500,
+            "campaign_cost": 50,
+            "campaign_success_rate": 0.30
+        }
+    }
+    """
+
     customer: CustomerInput
-    business: BusinessSettings = BusinessSettings()
-    threshold: float = Field(
-        default=DEFAULT_THRESHOLD,
+    business: BusinessSettings = Field(default_factory=BusinessSettings)
+
+    # None means: use the optimized threshold saved during training.
+    threshold: float | None = Field(
+        default=None,
         ge=0.0,
         le=1.0,
-        description="Decision threshold for labeling churn risk.",
     )
 
 
@@ -127,17 +199,20 @@ class BusinessImpact(BaseModel):
 
 
 class PredictionResponse(BaseModel):
-    model_version: str
+    model_name: str
     churn_probability: float
+    prediction: str
     predicted_churn: bool
-    risk_level: Literal["low", "medium", "high"]
+    risk_band: Literal["Low", "Watchlist", "High", "Critical"]
     decision_threshold: float
+    recommended_action: str
     business_impact: BusinessImpact
 
 
 class HealthResponse(BaseModel):
     status: Literal["healthy", "unhealthy"]
     model_loaded: bool
+    model_name: str
     model_version: str
 
 
@@ -148,28 +223,47 @@ class HealthResponse(BaseModel):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Load the artifact once before accepting requests.
-    """
+    """Load the trained model artifact once during application startup."""
 
     if not MODEL_PATH.exists():
         raise RuntimeError(
             f"Model artifact not found: {MODEL_PATH}. "
-            "Run the training script first to create artifacts/churn_model.pkl."
+            "Run customer_churn/train_model.py first."
         )
 
-    app.state.model = joblib.load(MODEL_PATH)
+    # The training script saves a dictionary:
+    #
+    # {
+    #     "model": calibrated_pipeline,
+    #     "threshold": 0.19,
+    #     "model_name": "random_forest",
+    #     "raw_features": [...]
+    # }
+    artifact = joblib.load(MODEL_PATH)
+
+    if not isinstance(artifact, dict) or "model" not in artifact:
+        raise RuntimeError(
+            "Invalid model artifact format. "
+            "Expected the dictionary generated by train_model.py."
+        )
+
+    app.state.model = artifact["model"]
+    app.state.threshold = float(artifact.get("threshold", FALLBACK_THRESHOLD))
+    app.state.model_name = str(artifact.get("model_name", "churn_model"))
+    app.state.raw_features = artifact.get("raw_features", [])
 
     yield
 
     app.state.model = None
+    app.state.threshold = None
+    app.state.model_name = None
+    app.state.raw_features = None
 
 
 app = FastAPI(
     title="ChurnGuard Prediction API",
     description=(
-        "Production API for calibrated customer churn prediction and "
-        "retention-campaign ROI estimation."
+        "Calibrated customer churn prediction and retention campaign value estimation."
     ),
     version=MODEL_VERSION,
     lifespan=lifespan,
@@ -181,18 +275,22 @@ app = FastAPI(
 # ============================================================
 
 
-def get_risk_level(probability: float, threshold: float) -> str:
-    """
-    Map calibrated probability to an interpretable risk segment.
-    """
+def get_risk_band(
+    probability: float,
+    threshold: float,
+) -> str:
+    """Map churn probability to a human-readable risk category."""
 
-    if probability >= max(threshold, 0.75):
-        return "high"
+    if probability >= max(0.85, threshold + 0.30):
+        return "Critical"
+
+    if probability >= max(0.65, threshold + 0.15):
+        return "High"
 
     if probability >= threshold:
-        return "medium"
+        return "Watchlist"
 
-    return "low"
+    return "Low"
 
 
 def calculate_business_impact(
@@ -200,11 +298,13 @@ def calculate_business_impact(
     settings: BusinessSettings,
 ) -> BusinessImpact:
     """
-    Expected-value calculation:
+    Calculate simple expected-value estimates for a retention campaign.
 
-    Expected loss = P(churn) × CLV
-    Expected benefit = P(churn) × campaign success rate × CLV
-    Net value = expected benefit - campaign cost
+    Expected loss:
+        churn_probability × customer_lifetime_value
+
+    Expected retention benefit:
+        churn_probability × campaign_success_rate × customer_lifetime_value
     """
 
     expected_loss = churn_probability * settings.customer_lifetime_value
@@ -215,20 +315,37 @@ def calculate_business_impact(
         * settings.customer_lifetime_value
     )
 
-    net_value = expected_benefit - settings.campaign_cost
+    expected_net_value = expected_benefit - settings.campaign_cost
 
     roi_percent = None
-    if settings.campaign_cost > 0:
-        roi_percent = (net_value / settings.campaign_cost) * 100
 
-    recommendation = "intervene" if net_value > 0 else "do_not_intervene"
+    if settings.campaign_cost > 0:
+        roi_percent = (expected_net_value / settings.campaign_cost) * 100
+
+    recommendation = (
+        "Intervene with a retention offer."
+        if expected_net_value > 0
+        else "Do not intervene; expected campaign value is negative."
+    )
 
     return BusinessImpact(
-        expected_loss_without_intervention=round(expected_loss, 2),
-        expected_retention_benefit=round(expected_benefit, 2),
-        campaign_cost=round(settings.campaign_cost, 2),
-        expected_net_value=round(net_value, 2),
-        roi_percent=round(roi_percent, 2) if roi_percent is not None else None,
+        expected_loss_without_intervention=round(
+            expected_loss,
+            2,
+        ),
+        expected_retention_benefit=round(
+            expected_benefit,
+            2,
+        ),
+        campaign_cost=round(
+            settings.campaign_cost,
+            2,
+        ),
+        expected_net_value=round(
+            expected_net_value,
+            2,
+        ),
+        roi_percent=(round(roi_percent, 2) if roi_percent is not None else None),
         recommendation=recommendation,
     )
 
@@ -248,6 +365,7 @@ def root():
         "version": MODEL_VERSION,
         "docs": "/docs",
         "health": "/health",
+        "predict": "/predict",
     }
 
 
@@ -257,13 +375,18 @@ def root():
     tags=["System"],
 )
 def health(request: Request):
-    """Health check for Docker, cloud deployment, or load balancers."""
+    """Health check for local development and cloud deployment."""
 
-    is_loaded = getattr(request.app.state, "model", None) is not None
+    model = getattr(request.app.state, "model", None)
 
     return HealthResponse(
-        status="healthy" if is_loaded else "unhealthy",
-        model_loaded=is_loaded,
+        status="healthy" if model is not None else "unhealthy",
+        model_loaded=model is not None,
+        model_name=getattr(
+            request.app.state,
+            "model_name",
+            "unknown",
+        ),
         model_version=MODEL_VERSION,
     )
 
@@ -277,53 +400,81 @@ def predict(
     payload: PredictionRequest,
     request: Request,
 ):
-    """
-    Predict calibrated churn probability from raw customer attributes.
-    """
+    """Predict calibrated customer churn probability."""
 
     model = getattr(request.app.state, "model", None)
 
     if model is None:
         raise HTTPException(
             status_code=503,
-            detail="Model is not loaded. Service is temporarily unavailable.",
+            detail="Model is not loaded. Service unavailable.",
         )
 
     try:
-        # Preserve original feature names required by the sklearn pipeline.
+        # Use aliases to produce the exact original raw training columns:
+        #
+        # Age, Gender, Tenure, MonthlyCharges, TotalCharges,
+        # ContractType, InternetService, TechSupport
         raw_customer = payload.customer.model_dump(by_alias=True)
 
         input_df = pd.DataFrame([raw_customer])
 
         probability = float(model.predict_proba(input_df)[0, 1])
 
-        predicted_churn = probability >= payload.threshold
+        saved_threshold = float(
+            getattr(
+                request.app.state,
+                "threshold",
+                FALLBACK_THRESHOLD,
+            )
+        )
+
+        decision_threshold = (
+            float(payload.threshold)
+            if payload.threshold is not None
+            else saved_threshold
+        )
+
+        predicted_churn = probability >= decision_threshold
+
+        risk_band = get_risk_band(
+            probability=probability,
+            threshold=decision_threshold,
+        )
 
         impact = calculate_business_impact(
             churn_probability=probability,
             settings=payload.business,
         )
 
+        prediction_text = "Likely to churn" if predicted_churn else "Unlikely to churn"
+
         return PredictionResponse(
-            model_version=MODEL_VERSION,
-            churn_probability=round(probability, 6),
-            predicted_churn=predicted_churn,
-            risk_level=get_risk_level(
-                probability=probability,
-                threshold=payload.threshold,
+            model_name=getattr(
+                request.app.state,
+                "model_name",
+                "churn_model",
             ),
-            decision_threshold=payload.threshold,
+            churn_probability=round(probability, 6),
+            prediction=prediction_text,
+            predicted_churn=predicted_churn,
+            risk_band=risk_band,
+            decision_threshold=round(
+                decision_threshold,
+                6,
+            ),
+            recommended_action=impact.recommendation,
             business_impact=impact,
         )
 
-    except ValueError as exc:
+    except ValueError as error:
         raise HTTPException(
             status_code=422,
-            detail=f"Invalid feature values for the model: {str(exc)}",
-        ) from exc
+            detail=(f"Invalid feature values supplied to the model: {str(error)}"),
+        ) from error
 
-    except Exception as exc:
+    except Exception as error:
         raise HTTPException(
             status_code=500,
-            detail="Prediction failed unexpectedly.",
-        ) from exc
+            detail=(f"Prediction failed unexpectedly: {str(error)}"),
+        ) from error
