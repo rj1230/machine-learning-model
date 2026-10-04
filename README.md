@@ -220,11 +220,5 @@ They form the practical ML foundation behind more advanced AI systems such as ag
 This project is licensed under the MIT License.
 
 ---
-
-## 👤 Author
-
-**Raj Rajput**  
-Aspiring AI/ML Engineer · Machine Learning · Data Science · Agentic AI
-
 - GitHub: [@rj1230](https://github.com/rj1230)
 - Live Demo: [Machine Learning Models App](https://machine-learning-model-ipfxzaz7jrahcapvwxhifm.streamlit.app/)
