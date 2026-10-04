@@ -1,152 +1,197 @@
 <div align="center">
 
-# 🤖 Machine Learning Models
+# 📊 Predictive Analytics Decision Suite
 
-### End-to-End Classical ML Projects with Interactive Streamlit Demos
+### End-to-End Machine Learning Classification & Streamlit Cloud Deployment
 
-**From raw data to trained, evaluated, and deployed models using Python, scikit-learn, and Streamlit.**
+**Interactive decision-support applications for Customer Churn Prediction and NYC Airbnb Room-Type Classification.**
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-Machine_Learning-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
 [![pandas](https://img.shields.io/badge/pandas-Data_Processing-150458?logo=pandas&logoColor=white)](https://pandas.pydata.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-Interactive_Demos-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Cloud_Deployment-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 </div>
 
 ---
 
-## 📌 Overview
+## Overview
 
-This repository contains end-to-end machine learning projects that solve practical classification problems using classical ML techniques.
+Predictive Analytics Decision Suite is a collection of end-to-end machine learning applications for practical classification problems.
 
-Each project follows a complete workflow:
+The repository includes two deployed Streamlit applications:
+
+- **ChurnGuard** — predicts customer churn risk.
+- **StayType AI** — predicts NYC Airbnb room type.
+
+Both projects demonstrate a complete machine learning workflow, from data preparation and model selection to performance evaluation and interactive deployment.
 
 ```text
-Raw Data → EDA & Cleaning → Feature Engineering → Model Training → Tuning & Evaluation → Saved Model → Streamlit Demo
+Raw Data → Cleaning & Preprocessing → Model Training → Optimization
+→ Evaluation → Saved Pipeline → Streamlit Deployment
 ```
 
-The focus is not only on training models, but on building reproducible, interpretable, and deployable ML workflows.
+---
+
+## Live Applications
+
+| Application | Task | Live Demo |
+|---|---|---|
+| 📉 **ChurnGuard** | Binary Customer Churn Classification | [Launch Application](https://customer-churn-vhmvtn5oqq5sfqyjyijj2z.streamlit.app/) |
+| 🏠 **StayType AI** | Multiclass NYC Airbnb Room-Type Classification | [Launch Application](https://machine-learning-model-ipfxzaz7jrahcapvwxhifm.streamlit.app/) |
 
 ---
 
-## 🔗 Live Demos
+## Projects
 
-| Project | Demo |
+| Project | Classification Type | Objective |
+|---|---|---|
+| 📉 **ChurnGuard** | Binary Classification | Predict whether a customer is likely to churn |
+| 🏠 **StayType AI** | Multiclass Classification | Predict whether an NYC Airbnb listing is an Entire home/apt, Private room, or Shared room |
+
+---
+
+## 📉 ChurnGuard
+
+ChurnGuard is a binary classification application that estimates customer churn probability using customer age, gender, tenure, and monthly charges.
+
+### Key Capabilities
+
+- Data cleaning, validation, and categorical encoding.
+- Stratified train/test splitting for reproducible evaluation.
+- Model comparison across Logistic Regression, KNN, SVM, and Random Forest.
+- Hyperparameter optimization using `GridSearchCV`.
+- Evaluation using accuracy, precision, recall, F1-score, and ROC-AUC.
+- Real-time churn-risk prediction through an interactive Streamlit dashboard.
+- Customer analytics and model-comparison visualizations.
+
+### ML Workflow
+
+```text
+Customer Data
+    ↓
+Cleaning and Encoding
+    ↓
+Stratified Train/Test Split
+    ↓
+Preprocessing Pipelines
+    ↓
+GridSearchCV Optimization
+    ↓
+Model Comparison
+    ↓
+Best ROC-AUC Model
+    ↓
+Real-Time Churn Prediction
+```
+
+---
+
+## 🏠 StayType AI
+
+StayType AI is a calibrated multiclass classification application that predicts the likely room type of an NYC Airbnb listing.
+
+### Target Classes
+
+- Entire home/apt
+- Private room
+- Shared room
+
+### Key Capabilities
+
+- Leakage-safe feature engineering and preprocessing.
+- Numeric and categorical imputation.
+- One-hot encoding for categorical features.
+- Optuna-based model selection between Random Forest and Histogram Gradient Boosting.
+- Hyperparameter optimization using cross-validation.
+- Isotonic probability calibration for more reliable confidence estimates.
+- Decision-weight tuning to improve performance for the underrepresented Shared room class.
+- Real-time prediction, class-probability visualization, confidence indicators, and evaluation dashboards.
+
+### ML Workflow
+
+```text
+NYC Airbnb Listing Data
+    ↓
+Cleaning and Stratified Split
+    ↓
+Feature Engineering
+    ↓
+Imputation and One-Hot Encoding
+    ↓
+Optuna Model Optimization
+    ↓
+Random Forest vs Histogram Gradient Boosting
+    ↓
+Isotonic Probability Calibration
+    ↓
+Minority-Class Decision Adjustment
+    ↓
+Real-Time Room-Type Prediction
+```
+
+---
+
+## Evaluation
+
+The projects use multiple evaluation metrics rather than relying on accuracy alone.
+
+| Metric | Purpose |
 |---|---|
-| 📉 Customer Churn Prediction | [customer-churn.streamlit.app](https://customer-churn-vhmvtn5oqq5sfqyjyijj2z.streamlit.app/) |
-| 🤖 Machine Learning Models App | [machine-learning-model.streamlit.app](https://machine-learning-model-ipfxzaz7jrahcapvwxhifm.streamlit.app/) |
+| Accuracy | Overall prediction correctness |
+| Precision | Reliability of positive predictions |
+| Recall | Ability to identify relevant positive cases |
+| F1-score | Balance between precision and recall |
+| ROC-AUC | Classification ranking performance for churn prediction |
+| Per-class F1 | Individual class performance for room-type classification |
+| Confusion Matrix | Prediction error analysis across classes |
+| Brier Score | Probability-calibration quality for StayType AI |
 
 ---
 
-## 📦 Projects
+## Technology Stack
 
-| Project | Task | Goal | Folder |
-|---|---|---|---|
-| 📉 Customer Churn Prediction | Binary Classification | Predict whether a customer is likely to leave | `customer_churn/` |
-| 🏠 NYC Airbnb Room Type Classification | Multi-Class Classification | Classify NYC Airbnb listings by room type | `NYC_Airbnb_Room/` |
-
----
-
-## 📉 Customer Churn Prediction
-
-Predicts whether a customer is likely to churn based on demographic, account, service, and billing-related features.
-
-### Workflow
-
-- Exploratory data analysis and missing-value handling
-- Categorical encoding and feature preparation
-- Train/test splitting with reproducible evaluation
-- Classification model training
-- Performance evaluation using accuracy, precision, recall, F1-score, and confusion matrix
-- Model persistence with Joblib
-- Interactive Streamlit prediction interface
-
-### Business Value
-
-Customer churn prediction helps teams identify at-risk customers earlier, prioritize retention efforts, and reduce avoidable revenue loss.
-
----
-
-## 🏠 NYC Airbnb Room Type Classification
-
-Classifies NYC Airbnb listings into room-type categories using listing characteristics and engineered features.
-
-### Workflow
-
-- Raw listing data exploration and cleaning
-- Feature selection and preprocessing
-- Categorical feature encoding
-- Multi-class classification model training
-- Model comparison across multiple algorithms
-- Hyperparameter tuning with `RandomizedSearchCV`
-- Evaluation and model persistence
-- Streamlit-based interactive demo
-
-### Models Compared
-
-- Logistic Regression
-- Decision Tree
-- Random Forest
-- Gradient Boosting
-
----
-
-## ✨ What’s Covered
-
-- **Classification** for both binary and multi-class problems
-- **Exploratory data analysis** to understand distributions, correlations, and data-quality issues
-- **Data cleaning and preprocessing** for real-world messy datasets
-- **Feature engineering** to improve model input quality
-- **Model comparison** across classical ML algorithms
-- **Hyperparameter tuning** using `RandomizedSearchCV`
-- **Model evaluation** using classification metrics and confusion matrices
-- **Model persistence** using Joblib
-- **Interactive deployment** using Streamlit Cloud
-
----
-
-## 🧩 Tech Stack
-
-| Layer | Tools |
+| Category | Tools |
 |---|---|
 | Language | Python |
-| Machine learning | scikit-learn |
-| Data handling | pandas, NumPy |
-| Model persistence | Joblib |
-| Interactive UI | Streamlit |
-| Dependency management | `uv`, `pyproject.toml`, `uv.lock` |
-| Alternative installation | `requirements.txt` |
+| Data Processing | pandas, NumPy |
+| Machine Learning | scikit-learn |
+| Hyperparameter Optimization | `GridSearchCV`, Optuna |
+| Visualization | Plotly, Streamlit Charts |
+| Model Persistence | Joblib |
+| Application Framework | Streamlit |
+| Deployment | Streamlit Community Cloud |
+| Dependency Management | `uv`, `pyproject.toml`, `uv.lock`, `requirements.txt` |
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 machine-learning-model/
-├── NYC_Airbnb_Room/       # NYC Airbnb room-type classification project
-├── customer_churn/        # Customer churn prediction project
-├── ui.py                  # Streamlit application
-├── pyproject.toml         # Project dependencies and configuration
-├── uv.lock                # Locked dependency versions
-├── requirements.txt       # pip-compatible dependencies
-└── .gitignore
+├── customer_churn/             # ChurnGuard application and dataset
+├── NYC_Airbnb_Room/            # StayType AI pipeline, model, and reports
+├── ui.py                       # Streamlit entry point
+├── pyproject.toml              # Project configuration
+├── uv.lock                     # Locked dependency versions
+├── requirements.txt            # pip-compatible dependencies
+├── LICENSE
+└── README.md
 ```
-
-Each project lives in its own folder with its own dataset, preprocessing code, model-training workflow, and saved artifacts.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### 1. Clone the repository
+### Clone the repository
 
 ```bash
 git clone [https://github.com/rj1230/machine-learning-model.git](https://github.com/rj1230/machine-learning-model.git)
 cd machine-learning-model
 ```
 
-### 2. Install dependencies
+### Install dependencies
 
 Using `uv`:
 
@@ -160,7 +205,7 @@ Or using pip:
 pip install -r requirements.txt
 ```
 
-### 3. Launch the Streamlit app
+### Run the Streamlit application
 
 ```bash
 streamlit run ui.py
@@ -168,57 +213,41 @@ streamlit run ui.py
 
 ---
 
-## 🧪 ML Workflow
+## Responsible Use
 
-```mermaid
-flowchart LR
-    A[Raw Dataset] --> B[EDA & Data Cleaning]
-    B --> C[Feature Engineering]
-    C --> D[Train/Test Split]
-    D --> E[Model Training]
-    E --> F[Hyperparameter Tuning]
-    F --> G[Evaluation]
-    G --> H[Model Persistence]
-    H --> I[Streamlit Demo]
-```
+The applications provide machine-learning estimates based on historical data.
+
+- Churn predictions are not guarantees of customer behavior.
+- Airbnb room-type predictions are not verified listing attributes.
+- Predictions should not be used as the sole basis for high-impact business, housing, or automated decisions.
+- Low-confidence outputs should be reviewed by a human before action is taken.
 
 ---
 
-## 📊 Evaluation Approach
+## Key Learning Outcomes
 
-Models are evaluated using standard classification metrics:
+This repository demonstrates practical experience with:
 
-- Accuracy
-- Precision
-- Recall
-- F1-score
-- Confusion matrix
-- Class-wise performance
-
-This avoids relying on accuracy alone, especially for imbalanced classification problems such as churn prediction.
-
----
-
-## 🎯 Why This Repository Matters
-
-These projects demonstrate the complete classical machine-learning workflow:
-
-- Understanding a real-world business or data problem
-- Preparing messy raw data for modeling
-- Building and comparing multiple models
-- Tuning models rather than relying on default parameters
-- Evaluating results with appropriate metrics
-- Saving trained artifacts for reuse
-- Deploying an interactive interface for non-technical users
-
-They form the practical ML foundation behind more advanced AI systems such as agentic RAG platforms, LLM routing systems, and production model services.
+- Binary and multiclass machine learning classification.
+- Model comparison and hyperparameter optimization.
+- Reproducible preprocessing and model pipelines.
+- Probability-based predictions and calibration.
+- Minority-class performance considerations.
+- Interactive ML application development.
+- Streamlit Cloud deployment of machine learning systems.
 
 ---
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
-- GitHub: [@rj1230](https://github.com/rj1230)
-- Live Demo: [Machine Learning Models App](https://machine-learning-model-ipfxzaz7jrahcapvwxhifm.streamlit.app/)
+
+<div align="center">
+
+Built by [@rj1230](https://github.com/rj1230) ·  
+[ChurnGuard Demo](https://customer-churn-vhmvtn5oqq5sfqyjyijj2z.streamlit.app/) ·  
+[StayType AI Demo](https://machine-learning-model-ipfxzaz7jrahcapvwxhifm.streamlit.app/)
+
+</div>
