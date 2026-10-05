@@ -1,0 +1,79 @@
+{
+  "selection_metric": "cross_validated_f1",
+  "models": [
+    {
+      "model": "logistic_regression",
+      "best_cv_f1": 0.6504817444219066,
+      "test_accuracy": 0.752306600425834,
+      "test_balanced_accuracy": 0.7622426309127077,
+      "test_precision": 0.5222816399286988,
+      "test_recall": 0.7834224598930482,
+      "test_f1": 0.6267379679144385,
+      "test_roc_auc": 0.8525355860394224,
+      "test_average_precision": 0.6624638562658328,
+      "fit_seconds": 3.8585458999987168,
+      "best_params": "{'model__C': 0.1, 'model__solver': 'lbfgs'}"
+    },
+    {
+      "model": "random_forest",
+      "best_cv_f1": 0.6528926362512668,
+      "test_accuracy": 0.7608232789212207,
+      "test_balanced_accuracy": 0.7723087654033945,
+      "test_precision": 0.5330948121645797,
+      "test_recall": 0.7967914438502673,
+      "test_f1": 0.6387995712754555,
+      "test_roc_auc": 0.850654886460513,
+      "test_average_precision": 0.6647496639435024,
+      "fit_seconds": 545.2174374000006,
+      "best_params": "{'model__max_depth': 8, 'model__max_features': 'log2', 'model__min_samples_leaf': 1, 'model__min_samples_split': 10, 'model__n_estimators': 300}"
+    },
+    {
+      "model": "hist_gradient_boosting",
+      "best_cv_f1": 0.6120168819349758,
+      "test_accuracy": 0.8048261178140526,
+      "test_balanced_accuracy": 0.7211488284378309,
+      "test_precision": 0.6612377850162866,
+      "test_recall": 0.5427807486631016,
+      "test_f1": 0.5961820851688693,
+      "test_roc_auc": 0.8573949210777854,
+      "test_average_precision": 0.6744983622618415,
+      "fit_seconds": 1055.2853615999993,
+      "best_params": "{'model__l2_regularization': 1.0, 'model__learning_rate': 0.03, 'model__max_iter': 250, 'model__max_leaf_nodes': 15, 'model__min_samples_leaf': 20}"
+    }
+  ],
+  "best_model": {
+    "name": "random_forest",
+    "cv_f1": 0.6528926362512668,
+    "test_metrics": {
+      "accuracy": 0.7608232789212207,
+      "balanced_accuracy": 0.7723087654033945,
+      "precision": 0.5330948121645797,
+      "recall": 0.7967914438502673,
+      "f1": 0.6387995712754555,
+      "roc_auc": 0.850654886460513,
+      "average_precision": 0.6647496639435024,
+      "classification_report": "              precision    recall  f1-score   support\n\n    No Churn       0.91      0.75      0.82      1035\n       Churn       0.53      0.80      0.64       374\n\n    accuracy                           0.76      1409\n   macro avg       0.72      0.77      0.73      1409\nweighted avg       0.81      0.76      0.77      1409\n",
+      "confusion_matrix": [
+        [
+          774,
+          261
+        ],
+        [
+          76,
+          298
+        ]
+      ]
+    },
+    "best_params": {
+      "model__max_depth": 8,
+      "model__max_features": "log2",
+      "model__min_samples_leaf": 1,
+      "model__min_samples_split": 10,
+      "model__n_estimators": 300
+    }
+  },
+  "resource_configuration": {
+    "grid_search_n_jobs": 1,
+    "random_forest_n_jobs": 1
+  }
+}

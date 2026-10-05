@@ -1,120 +1,129 @@
 {
-  "model_name": "random_forest",
-  "best_parameters": {
-    "model__n_estimators": 500,
-    "model__min_samples_leaf": 5,
-    "model__max_depth": 12
+  "dataset": {
+    "rows": 7043,
+    "columns": 33,
+    "training_rows": 5634,
+    "testing_rows": 1409,
+    "churn_rate": 0.2653698707936959
   },
-  "test_accuracy": 1.0,
-  "test_roc_auc": 1.0,
-  "test_pr_auc": 1.0,
-  "test_precision": 1.0,
-  "test_recall": 1.0,
-  "test_f1": 1.0,
-  "mean_brier_score": 1.3111457090484233e-06,
-  "decision_threshold": 0.19000000000000003,
-  "cv_model_comparison": [
-    {
-      "model": "logistic_regression",
-      "cv_roc_auc": 0.9924905808964739,
-      "best_parameters": {
-        "model__C": 20
-      }
-    },
-    {
-      "model": "random_forest",
-      "cv_roc_auc": 1.0,
-      "best_parameters": {
-        "model__n_estimators": 500,
-        "model__min_samples_leaf": 5,
-        "model__max_depth": 12
-      }
-    },
-    {
-      "model": "hist_gradient_boosting",
-      "cv_roc_auc": 1.0,
-      "best_parameters": {
-        "model__min_samples_leaf": 10,
-        "model__max_leaf_nodes": 31,
-        "model__max_iter": 150,
-        "model__learning_rate": 0.06
-      }
-    }
-  ],
-  "class_distribution": {
-    "stay": 117,
-    "churn": 883
+  "features": {
+    "numeric_features": [
+      "Senior Citizen",
+      "Partner",
+      "Dependents",
+      "Tenure Months",
+      "Phone Service",
+      "Paperless Billing",
+      "Monthly Charges",
+      "Total Charges",
+      "charges_per_tenure_month",
+      "is_new_customer",
+      "is_long_tenure_customer",
+      "is_senior_customer",
+      "is_high_monthly_charge",
+      "month_to_month_contract",
+      "long_contract",
+      "has_tech_support",
+      "has_online_security",
+      "has_online_backup",
+      "has_device_protection",
+      "fiber_optic_customer",
+      "has_streaming",
+      "electronic_payment"
+    ],
+    "categorical_features": [
+      "Gender",
+      "Multiple Lines",
+      "Internet Service",
+      "Online Security",
+      "Online Backup",
+      "Device Protection",
+      "Tech Support",
+      "Streaming TV",
+      "Streaming Movies",
+      "Contract",
+      "Payment Method"
+    ],
+    "total_model_features": 33
   },
-  "classification_report": {
-    "No churn": {
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1-score": 1.0,
-      "support": 23.0
+  "models": {
+    "logistic_regression": {
+      "test_metrics": {
+        "accuracy": 0.7537260468417317,
+        "balanced_accuracy": 0.7649164277041516,
+        "precision": 0.5239786856127886,
+        "recall": 0.7887700534759359,
+        "f1": 0.6296691568836713,
+        "roc_auc": 0.8519801596527938,
+        "average_precision": 0.6599355329274977,
+        "classification_report": "              precision    recall  f1-score   support\n\n    No Churn       0.91      0.74      0.82      1035\n       Churn       0.52      0.79      0.63       374\n\n    accuracy                           0.75      1409\n   macro avg       0.72      0.76      0.72      1409\nweighted avg       0.81      0.75      0.77      1409\n",
+        "confusion_matrix": [
+          [
+            767,
+            268
+          ],
+          [
+            79,
+            295
+          ]
+        ]
+      },
+      "cv_f1_mean": 0.6475898933065575,
+      "cv_f1_std": 0.004083746860806592
     },
-    "Churn": {
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1-score": 1.0,
-      "support": 177.0
+    "random_forest": {
+      "test_metrics": {
+        "accuracy": 0.7714691270404542,
+        "balanced_accuracy": 0.7317419721511793,
+        "precision": 0.5601851851851852,
+        "recall": 0.6470588235294118,
+        "f1": 0.6004962779156328,
+        "roc_auc": 0.8314255082797283,
+        "average_precision": 0.6279506056317989,
+        "classification_report": "              precision    recall  f1-score   support\n\n    No Churn       0.86      0.82      0.84      1035\n       Churn       0.56      0.65      0.60       374\n\n    accuracy                           0.77      1409\n   macro avg       0.71      0.73      0.72      1409\nweighted avg       0.78      0.77      0.78      1409\n",
+        "confusion_matrix": [
+          [
+            845,
+            190
+          ],
+          [
+            132,
+            242
+          ]
+        ]
+      },
+      "cv_f1_mean": 0.6180725729614565,
+      "cv_f1_std": 0.007625751060889974
     },
-    "accuracy": 1.0,
-    "macro avg": {
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1-score": 1.0,
-      "support": 200.0
-    },
-    "weighted avg": {
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1-score": 1.0,
-      "support": 200.0
+    "hist_gradient_boosting": {
+      "test_metrics": {
+        "accuracy": 0.794889992902768,
+        "balanced_accuracy": 0.7109703169805472,
+        "precision": 0.6357827476038339,
+        "recall": 0.5320855614973262,
+        "f1": 0.5793304221251819,
+        "roc_auc": 0.8402658296520189,
+        "average_precision": 0.6406290780682501,
+        "classification_report": "              precision    recall  f1-score   support\n\n    No Churn       0.84      0.89      0.86      1035\n       Churn       0.64      0.53      0.58       374\n\n    accuracy                           0.79      1409\n   macro avg       0.74      0.71      0.72      1409\nweighted avg       0.79      0.79      0.79      1409\n",
+        "confusion_matrix": [
+          [
+            921,
+            114
+          ],
+          [
+            175,
+            199
+          ]
+        ]
+      },
+      "cv_f1_mean": 0.5813651788798658,
+      "cv_f1_std": 0.0030694760393705778
     }
   },
-  "top_features": [
-    {
-      "Feature": "TechSupport",
-      "Importance": 0.2994043232620977
-    },
-    {
-      "Feature": "ContractType",
-      "Importance": 0.29823753377548506
-    },
-    {
-      "Feature": "Tenure",
-      "Importance": 0.24124907885040528
-    },
-    {
-      "Feature": "MonthlyCharges",
-      "Importance": 0.0010030295586670086
-    },
-    {
-      "Feature": "InternetService",
-      "Importance": 0.0
-    },
-    {
-      "Feature": "TotalCharges",
-      "Importance": 0.0
-    },
-    {
-      "Feature": "Gender",
-      "Importance": 0.0
-    },
-    {
-      "Feature": "Age",
-      "Importance": 0.0
-    }
-  ],
-  "dataset_rows": 1000,
-  "raw_features": [
-    "Age",
-    "Gender",
-    "Tenure",
-    "MonthlyCharges",
-    "ContractType",
-    "InternetService",
-    "TotalCharges",
-    "TechSupport"
-  ]
+  "best_model": {
+    "name": "logistic_regression",
+    "test_f1": 0.6296691568836713,
+    "test_roc_auc": 0.8519801596527938,
+    "cv_f1": 0.6475898933065575
+  }
 }

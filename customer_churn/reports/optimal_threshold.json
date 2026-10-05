@@ -1,0 +1,68 @@
+{
+  "model_path": "C:\\Users\\HP\\OneDrive\\Desktop\\Machine-learning-Project\\customer_churn\\models\\best_tuned_churn_model.pkl",
+  "selection_metric": "f1",
+  "best_f1_threshold": {
+    "threshold": 0.51,
+    "accuracy": 0.7643718949609652,
+    "balanced_accuracy": 0.773016611124028,
+    "precision": 0.5381818181818182,
+    "recall": 0.7914438502673797,
+    "f1": 0.6406926406926406,
+    "roc_auc": 0.850654886460513,
+    "average_precision": 0.6647496639435024,
+    "tn": 781.0,
+    "fp": 254.0,
+    "fn": 78.0,
+    "tp": 296.0
+  },
+  "best_recall_threshold": {
+    "threshold": 0.2,
+    "accuracy": 0.5826827537260468,
+    "balanced_accuracy": 0.7056963496861195,
+    "precision": 0.3859275053304904,
+    "recall": 0.9679144385026738,
+    "f1": 0.551829268292683,
+    "roc_auc": 0.850654886460513,
+    "average_precision": 0.6647496639435024,
+    "tn": 459.0,
+    "fp": 576.0,
+    "fn": 12.0,
+    "tp": 362.0
+  },
+  "best_balanced_accuracy_threshold": {
+    "threshold": 0.51,
+    "accuracy": 0.7643718949609652,
+    "balanced_accuracy": 0.773016611124028,
+    "precision": 0.5381818181818182,
+    "recall": 0.7914438502673797,
+    "f1": 0.6406926406926406,
+    "roc_auc": 0.850654886460513,
+    "average_precision": 0.6647496639435024,
+    "tn": 781.0,
+    "fp": 254.0,
+    "fn": 78.0,
+    "tp": 296.0
+  },
+  "default_threshold_0_50": {
+    "threshold": 0.5,
+    "accuracy": 0.7608232789212207,
+    "balanced_accuracy": 0.7723087654033945,
+    "precision": 0.5330948121645797,
+    "recall": 0.7967914438502673,
+    "f1": 0.6387995712754555,
+    "roc_auc": 0.850654886460513,
+    "average_precision": 0.6647496639435024,
+    "tn": 774,
+    "fp": 261,
+    "fn": 76,
+    "tp": 298
+  },
+  "probability_summary": {
+    "min": 0.006392387120958154,
+    "max": 0.9256084685945365,
+    "mean": 0.4037690187304999,
+    "roc_auc": 0.850654886460513,
+    "average_precision": 0.6647496639435024
+  },
+  "warning": "Threshold was selected on the held-out split. For production use, validate the threshold with cross-validation or a separate validation set before locking it."
+}
